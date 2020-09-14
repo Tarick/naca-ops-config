@@ -1,0 +1,22 @@
+
+fullnameOverride: publications-sql-migrations
+image:
+  repository: {{ .Values.repository }}/publications/publications-sql-migrations
+#  tag: 0.0.1
+
+resources:
+  limits:
+    memory: "400Mi"
+    cpu: "8"
+  requests:
+    memory: "400Mi"
+    cpu: "50m"
+
+config:
+  database:
+    host: {{ .Values.publications.sql.hostname }}
+    database: {{ .Values.publications.sql.database }}
+    port: {{ .Values.publications.sql.port }}}
+    user: {{ .Values.publications.sql.username }}
+    password: {{ .Values.publications.sql.password }}
+    sslmode: {{ .Values.publications.sql.sslmode }}

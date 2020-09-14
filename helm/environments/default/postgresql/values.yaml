@@ -1,0 +1,25 @@
+---
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: naca-postgresql
+spec:
+  teamId: "naca"
+  volume:
+    size: 5Gi
+  numberOfInstances: 1
+  users:
+    # database owner
+    admin:
+    - superuser
+    - createdb
+    # role for application foo
+    rss_feeds: []
+
+  #databases: name->owner
+  databases:
+    rss_feeds: rss_feeds
+  postgresql:
+    version: "12"
+
+# rss-feeds.naca-postgresql.credentials.postgresql.acid.zalan.do

@@ -1,0 +1,47 @@
+---
+fullnameOverride: rss-feeds-api
+image:
+  repository: {{ .Values.repository }}/rss-feeds/rss-feeds-api
+  # tag: 0.0.1
+
+resources:
+  limits:
+    memory: "400Mi"
+    cpu: "8"
+  requests:
+    memory: "400Mi"
+    cpu: "50m"
+
+config:
+  content: |-
+    logging:
+      # Development key puts the logger in development mode, which changes the behavior of DPanicLevel and takes stacktraces more liberally.
+      development: true
+      # level: info
+      level: debug
+      #encoding: console
+      encoding: json
+      disable_caller: false
+      disable_stacktrace: false
+      disable_color: true
+      output_paths: ["stdout"]
+      error_output_paths: ["stderr"]
+    server:
+      address: ":80"
+      request_timeout: 10
+    database:
+      hostname: {{ .Values.rss_feeds.sql.hostname }}
+      port: {{ .Values.rss_feeds.sql.port }}
+      name: {{ .Values.rss_feeds.sql.database }}
+      username: {{ .Values.rss_feeds.sql.username }}
+      password: {{ .Values.rss_feeds.sql.password }}
+      sslmode: disable
+      min_connections: 2
+      max_connections: 30
+      log_level: debug
+    publish:
+      host: {{ .Values.rss_feeds.nsq.nsqd }}
+      topic: {{ .Values.rss_feeds.topics.refresh_feeds }}
+    server:
+      address: ":80"
+      request_timeout: 10

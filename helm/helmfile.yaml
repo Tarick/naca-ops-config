@@ -1,0 +1,102 @@
+---
+{{ readFile "common.yaml" }}
+bases:
+  - environments.yaml
+---
+# Helm release names are not namespaced, name will have `dev` or `prod` prefix
+releases:
+  - name: postgresql
+    labels:
+      app_name: "postgresql"
+      tier: "naca"
+    chart: "bitnami/postgresql"
+    version: 8.10.5
+    namespace: naca
+    missingFileHandler: Warn
+    values:
+      - environments/default/postgresql/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/postgresql/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/postgresql/values.yaml.gotmpl   # Final overrides
+  - name: nsq
+    labels:
+      app_name: "nsq"
+      tier: "naca"
+    chart: "./charts/nsq"
+    namespace: naca
+    missingFileHandler: Warn
+    values:
+      - environments/default/nsq/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/nsq/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/nsq/values.yaml.gotmpl   # Final overrides
+  - name: rss-feeds-sql-migrations
+    labels:
+      app_name: "rss-feeds-sql-migrations"
+      tier: "naca-rss-feeds"
+    chart: "./charts/sql-migrations"
+    namespace: naca
+    missingFileHandler: Warn
+    values:
+      - environments/default/rss-feeds-sql-migrations/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/rss-feeds-sql-migrations/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/rss-feeds-sql-migrations/values.yaml.gotmpl   # Final overrides
+      - image:
+          tag: '{{ env "RSS_FEEDS_TAG" | default "undefinedTag" }}'
+  - name: rss-feeds-worker
+    labels:
+      app_name: "rss-feeds-worker"
+      tier: "naca-rss-feeds"
+    chart: "./charts/feeds-worker"
+    namespace: naca
+    missingFileHandler: Warn
+    needs:
+      - naca/rss-feeds-sql-migrations
+    values:
+      - environments/default/rss-feeds-worker/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/rss-feeds-worker/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/rss-feeds-worker/values.yaml.gotmpl   # Final overrides
+      - image:
+          tag: '{{ env "RSS_FEEDS_TAG" | default "undefinedTag" }}'
+  - name: rss-feeds-api
+    labels:
+      app_name: "rss-feeds-api"
+      tier: "naca-rss-feeds"
+    chart: "./charts/generic-api"
+    namespace: naca
+    needs:
+      - naca/rss-feeds-sql-migrations
+    missingFileHandler: Warn
+    values:
+      - environments/default/rss-feeds-api/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/rss-feeds-api/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/rss-feeds-api/values.yaml.gotmpl   # Final overrides
+      - image:
+          tag: '{{ env "RSS_FEEDS_TAG" | default "undefinedTag" }}'
+
+  - name: publications-sql-migrations
+    labels:
+      app_name: "publications-sql-migrations"
+      tier: "naca-publications"
+    chart: "./charts/tern-sql-migrations"
+    namespace: naca
+    missingFileHandler: Warn
+    values:
+      - environments/default/publications-sql-migrations/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/publications-sql-migrations/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/publications-sql-migrations/values.yaml.gotmpl   # Final overrides
+      - image:
+          tag: '{{ env "PUBLICATIONS_TAG" | default "undefinedTag" }}'
+  - name: publications-api
+    labels:
+      app_name: "publications-api"
+      tier: "naca-publications"
+    chart: "./charts/generic-api"
+    namespace: naca
+    needs:
+      - naca/publications-sql-migrations
+    missingFileHandler: Warn
+    values:
+      - environments/default/publications-api/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/publications-api/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/publications-api/values.yaml.gotmpl   # Final overrides
+      - image:
+          tag: '{{ env "PUBLICATIONS_TAG" | default "undefinedTag" }}'

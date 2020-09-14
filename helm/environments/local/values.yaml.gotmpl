@@ -1,0 +1,30 @@
+---
+repository: local
+rss_feeds:
+  sql:
+    hostname: postgresql
+    port: 5432
+    username: rss_feeds
+    password: rss_feeds
+    database: rss_feeds
+  nsq:
+    nsqlookupd: nsq-nsqlookupd:4161
+    nsqd: nsq-nsqd:4150
+  topics:
+    # shared between api and worker
+    refresh_feeds: "rss-feeds-refresh"
+  api:
+    hostname: rss-feeds-api.naca.svc.cluster.local.
+    url: http://rss-feeds-api.naca.svc.cluster.local.
+
+publications:
+  sql:
+    hostname: postgresql
+    port: 5432
+    username: publications
+    password: publications
+    database: publications
+    sslmode: disable
+  api:
+    hostname: publications-api.naca.svc.cluster.local.
+    url: http://publications-api.naca.svc.cluster.local.

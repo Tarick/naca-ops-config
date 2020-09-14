@@ -1,0 +1,24 @@
+---
+fullnameOverride: postgresql
+## Bitnami PostgreSQL image version
+## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
+##
+image:
+  tag: 12.3.0
+
+# persistence:
+#   enabled: true
+#   storageClass: "standard"
+#   accessModes:
+#     - ReadWriteOnce
+#   size: 8Gi
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  limits:
+    memory: "500Mi"
+    cpu: "4"
+  requests:
+    memory: "500Mi"
+    cpu: "50m"

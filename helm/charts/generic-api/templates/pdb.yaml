@@ -1,0 +1,12 @@
+{{- if .Values.pdb }}
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "generic-api.fullname" . }}
+spec:
+{{ toYaml .Values.pdb | indent 2 -}}
+  selector:
+    matchLabels:
+      {{- include "generic-api.selectorLabels" . | nindent 6 }}
+{{- end }}

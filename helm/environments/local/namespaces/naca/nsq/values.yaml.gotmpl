@@ -1,0 +1,32 @@
+nsqd:
+  persistence:
+    storageClass: "local-path"
+    resources:
+      requests:
+        storage: 5Gi
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 128Mi
+
+nsqlookupd:
+  resources:
+    limits:
+      cpu: 50m
+      memory: 32Mi
+    limits:
+      cpu: 10m
+      memory: 32Mi
+
+nsqadmin:
+  resources:
+    limits:
+      cpu: 50m
+      memory: 32Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi

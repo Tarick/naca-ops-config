@@ -1,0 +1,43 @@
+---
+fullnameOverride: publications-api
+nameOverride: publications-api
+image:
+  repository: {{ .Values.repository }}/publications/publications-api
+  # tag: 0.0.1
+
+resources:
+  limits:
+    memory: "400Mi"
+    cpu: "8"
+  requests:
+    memory: "400Mi"
+    cpu: "50m"
+
+config:
+  content: |-
+    logging:
+      # Development key puts the logger in development mode, which changes the behavior of DPanicLevel and takes stacktraces more liberally.
+      development: true
+      # level: info
+      level: debug
+      #encoding: console
+      encoding: json
+      disable_caller: false
+      disable_stacktrace: false
+      disable_color: true
+      output_paths: ["stdout"]
+      error_output_paths: ["stderr"]
+    server:
+      address: ":80"
+      request_timeout: 10
+    database:
+      hostname: {{ .Values.publications.sql.hostname }}
+      port: {{ .Values.publications.sql.port }}
+      name: {{ .Values.publications.sql.database }}
+      username: {{ .Values.publications.sql.username }}
+      password: {{ .Values.publications.sql.password }}
+      sslmode: {{ .Values.publications.sql.sslmode }}
+      min_connections: 2
+      max_connections: 30
+      log_level: debug
+    rss_api_url: {{ .Values.rss_feeds.api.url }}

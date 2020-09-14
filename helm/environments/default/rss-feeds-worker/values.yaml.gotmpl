@@ -1,0 +1,37 @@
+---
+fullnameOverride: rss-feeds-worker-all
+image:
+  repository: {{ .Values.repository }}/rss-feeds/rss-feeds-worker
+  # tag: 0.0.1
+
+resources:
+  limits:
+    memory: "400Mi"
+    cpu: "8"
+  requests:
+    memory: "400Mi"
+    cpu: "50m"
+
+config:
+  logging:
+    level: debug
+  database:
+    hostname: {{ .Values.rss_feeds.sql.hostname }}
+    port: {{ .Values.rss_feeds.sql.port }}
+    name: {{ .Values.rss_feeds.sql.database }}
+    username: {{ .Values.rss_feeds.sql.username }}
+    password: {{ .Values.rss_feeds.sql.password }}
+    sslmode: disable
+    max_connections: 10
+    min_connections: 2
+  consume:
+    nsqlookup: {{ .Values.rss_feeds.nsq.nsqlookupd }}
+    topic: {{ .Values.rss_feeds.topics.refresh_feeds }}
+    channel: "RSSFeedsWorkerRefreshFeeds"
+    # prefetch (in flight) messages should be bigger than workers
+    prefetch: 1
+    workers: 1
+    attempts: 1
+  publish:
+    host: {{ .Values.rss_feeds.nsq.nsqd }}
+    topic: {{ .Values.rss_feeds.topics.refresh_feeds }}

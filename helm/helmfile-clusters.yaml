@@ -1,0 +1,16 @@
+---
+{{ readFile "common.yaml" }}
+bases:
+  - clusters.yaml
+---
+# Helm release names are not namespaced, name will have `dev` or `prod` prefix
+releases:
+  - name: local-path-provisiner
+    labels:
+      app_name: "local-path-provisiner"
+      tier: "cluster"
+    chart: "./charts/local-path-provisioner"
+    namespace: kube-system
+    missingFileHandler: Warn
+    values:
+      - clusters/{{ .Environment.Name }}/roles/local-path-provisioner/values.yaml.gotmpl   # Shared env settings

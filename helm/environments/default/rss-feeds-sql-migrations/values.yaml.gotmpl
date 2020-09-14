@@ -1,0 +1,21 @@
+
+fullnameOverride: rss-feeds-sql-migrations
+image:
+  repository: {{ .Values.repository }}/rss-feeds/rss-feeds-sql-migrations
+  tag: 0.0.1
+
+resources:
+  limits:
+    memory: "400Mi"
+    cpu: "8"
+  requests:
+    memory: "400Mi"
+    cpu: "50m"
+
+config:
+  datasource:
+    host: {{ .Values.rss_feeds.sql.hostname }}
+    dbname: {{ .Values.rss_feeds.sql.database }}
+    user: {{ .Values.rss_feeds.sql.username }}
+    password: {{ .Values.rss_feeds.sql.password }}
+    sslmode: disable

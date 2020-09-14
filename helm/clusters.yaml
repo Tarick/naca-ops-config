@@ -1,0 +1,11 @@
+# use "helmfile --environment local" to filter out env
+environments:
+  local:
+    values:
+      - clusters/local/values.yaml.gotmpl
+    missingFileHandler: Warn
+  # production:
+  #   values:
+  #     - environments/default/values.yaml.gotmpl
+  #     - environments/production/values.yaml.gotmpl
+  #   missingFileHandler: Warn

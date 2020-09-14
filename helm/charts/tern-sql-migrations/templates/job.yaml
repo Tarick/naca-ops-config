@@ -1,0 +1,68 @@
+# Run the job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "tern-sql-migrations.fullname" . }}
+  labels:
+    {{- include "tern-sql-migrations.labels" . | nindent 4 }}
+  annotations:
+    cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 600
+  template:
+    metadata:
+      name: {{ include "tern-sql-migrations.fullname" . }}
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "tern-sql-migrations.selectorLabels" . | nindent 8 }}
+        {{- with .Values.labels }}
+{{ toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      restartPolicy: Never
+      containers:
+        - name: {{ .Chart.Name }}
+          args:
+          {{- toYaml .Values.command.args |nindent 12 }}
+          command:
+          {{- toYaml .Values.command.command |nindent 12}}
+          image: "{{ .Values.image.repository }}:{{ required "image.tag is required, use --set image.tag <VALUE>" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+{{- with.Values.env }}
+{{ toYaml . | nindent 12 }}
+{{ end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+          - name: config
+            mountPath: "/opt/app/tern.conf"
+            subPath: "tern.conf"
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | nindent 8 }}
+    {{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | nindent 8 }}
+    {{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ include "tern-sql-migrations.fullname" . }}

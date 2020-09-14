@@ -1,0 +1,32 @@
+fullnameOverride: "nsq"
+nsqd:
+  replicaCount: 1
+  image:
+    tag: "v1.2.0"
+    pullPolicy: "IfNotPresent"
+
+nsqlookupd:
+  name: "nsqlookupd"
+
+  podDisruptionBudget:
+    minAvailable: 1
+
+  replicaCount: 1
+  image:
+    # Source: https://github.com/nsqio/nsq/blob/master/Dockerfile
+    repository: "nsqio/nsq"
+    tag: "v1.2.0"
+    pullPolicy: "IfNotPresent"
+nsqadmin:
+  enabled: true
+  name: "admin"
+  autoscaling:
+    enabled: false
+  podDisruptionBudget:
+    minAvailable: 1
+  replicaCount: 1
+  image:
+    # Source: https://github.com/nsqio/nsq/blob/master/Dockerfile
+    repository: "nsqio/nsq"
+    tag: "v1.2.0"
+    pullPolicy: "IfNotPresent"

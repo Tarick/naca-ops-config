@@ -1,0 +1,37 @@
+# This file is for helmfile only
+# default values to set for args along with dedicated keys that can be set by contributers, cli args take precedence over these
+helmDefaults:
+  # kubeContext: kubernetes-admin@local
+  #tillerNamespace: tiller-namespace  #dedicated default key for tiller-namespace
+  #kubeContext: kube-context          #dedicated default key for kube-context
+  # additional and global args passed to helm
+  # args:
+  #  - "--set k=v"
+  # defaults for verify, wait, force, timeout and recreatePods under releases[]
+  tillerless: true
+  verify: false
+  wait: true
+  timeout: 600
+  recreatePods: false
+  historyMax: 5
+  # Helms atomic option will purge an initial release if it fails for whatever reason
+  # i.e. no more 'helm delete --purge' if initial one fails
+  atomic: true
+  force: true
+    # when using helm 3.2+, automatically create release namespaces if they do not exist (default true)
+  createNamespace: true
+# Advanced Configuration: API Capabilities
+#
+# 'helmfile template' renders releases locally without querying an actual cluster,
+# and in this case `.Capabilities.APIVersions` cannot be populated.
+# When a chart queries for a specific CRD, this can lead to unexpected results.
+#
+# Configure a fixed list of api versions to pass to 'helm template' via the --api-versions flag:
+apiVersions:
+- example/v1
+
+repositories:
+  - name: stable
+    url: https://kubernetes-charts.storage.googleapis.com
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami

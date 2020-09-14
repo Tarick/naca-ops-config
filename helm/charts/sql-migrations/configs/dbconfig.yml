@@ -1,0 +1,5 @@
+production:
+    dialect: postgres
+    datasource: host={{ .Values.config.datasource.host}} dbname={{ .Values.config.datasource.dbname }} user={{ .Values.config.datasource.user }} password={{ .Values.config.datasource.password }} sslmode={{ .Values.config.datasource.sslmode }}
+    dir: migrations
+    table: migrations
