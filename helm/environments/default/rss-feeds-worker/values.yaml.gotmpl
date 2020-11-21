@@ -1,5 +1,5 @@
 ---
-fullnameOverride: rss-feeds-worker-all
+fullnameOverride: rss-feeds-worker
 image:
   repository: {{ .Values.repository }}/rss-feeds/rss-feeds-worker
   # tag: 0.0.1
@@ -35,3 +35,6 @@ config:
   publish:
     host: {{ .Values.rss_feeds.nsq.nsqd }}
     topic: {{ .Values.rss_feeds.topics.refresh_feeds }}
+  itemPublish:
+    host: {{ .Values.items.nsq.nsqd }}
+    topic: {{ .Values.items.topics.newitem }}

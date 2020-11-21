@@ -28,3 +28,18 @@ publications:
   api:
     hostname: publications-api.naca.svc.cluster.local.
     url: http://publications-api.naca.svc.cluster.local.
+
+items:
+  sql:
+    hostname: postgresql
+    port: 5432
+    username: items
+    password: items
+    database: items
+    sslmode: disable
+  nsq:
+    nsqlookupd: nsq-nsqlookupd:4161
+    nsqd: nsq-nsqd:4150
+  topics:
+    # shared between api and worker
+    newitem: "new-items-process"

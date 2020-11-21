@@ -23,6 +23,7 @@ database:
   username: {{ .Values.config.database.username }}
   password: {{ .Values.config.database.password }}
   sslmode: {{ .Values.config.database.sslmode }}
+  log_level: {{ .Values.config.database.log_level }}
   min_connections: {{ .Values.config.database.min_connections }}
   max_connections: {{ .Values.config.database.max_connections }}
 
@@ -34,11 +35,3 @@ consume:
   prefetch: {{ .Values.config.consume.prefetch }}
   workers: {{ .Values.config.consume.workers }}
   attempts: {{ .Values.config.consume.attempts }}
-
-publish:
-  host: {{ .Values.config.publish.host }}
-  topic: {{ .Values.config.publish.topic }}
-
-itemPublish:
-  host: {{ .Values.config.itemPublish.host }}
-  topic: {{ .Values.config.itemPublish.topic }}

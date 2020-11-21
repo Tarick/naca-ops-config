@@ -76,6 +76,7 @@ config:
     username:
     password:
     sslmode: false
+    log_level: info
     max_connections:
     min_connections:
   consume:
@@ -86,9 +87,3 @@ config:
     prefetch: 1
     workers: 1
     attempts: 2
-  publish:
-    host:
-    topic:
-  itemPublish:
-    host:
-    topic:

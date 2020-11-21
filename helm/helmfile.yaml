@@ -85,6 +85,7 @@ releases:
       - environments/{{ .Environment.Name }}/namespaces/naca/publications-sql-migrations/values.yaml.gotmpl   # Final overrides
       - image:
           tag: '{{ env "PUBLICATIONS_TAG" | default "undefinedTag" }}'
+
   - name: publications-api
     labels:
       app_name: "publications-api"
@@ -100,3 +101,49 @@ releases:
       - environments/{{ .Environment.Name }}/namespaces/naca/publications-api/values.yaml.gotmpl   # Final overrides
       - image:
           tag: '{{ env "PUBLICATIONS_TAG" | default "undefinedTag" }}'
+
+  - name: items-sql-migrations
+    labels:
+      app_name: "items-sql-migrations"
+      tier: "naca-items"
+    chart: "./charts/tern-sql-migrations"
+    namespace: naca
+    missingFileHandler: Warn
+    values:
+      - environments/default/items-sql-migrations/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/items-sql-migrations/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/items-sql-migrations/values.yaml.gotmpl   # Final overrides
+      - image:
+          tag: '{{ env "ITEMS_TAG" | default "undefinedTag" }}'
+
+  - name: items-worker
+    labels:
+      app_name: "items-worker"
+      tier: "naca-items"
+    chart: "./charts/items-worker"
+    namespace: naca
+    needs:
+      - naca/items-sql-migrations
+    missingFileHandler: Warn
+    values:
+      - environments/default/items-worker/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/items-worker/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/items-worker/values.yaml.gotmpl   # Final overrides
+      - image:
+          tag: '{{ env "ITEMS_TAG" | default "undefinedTag" }}'
+
+  # - name: items-api
+  #   labels:
+  #     app_name: "items-api"
+  #     tier: "naca-items"
+  #   chart: "./charts/generic-api"
+  #   namespace: naca
+  #   needs:
+  #     - naca/items-sql-migrations
+  #   missingFileHandler: Warn
+  #   values:
+  #     - environments/default/items-api/values.yaml.gotmpl   # Shared env settings
+  #     - environments/{{ .Environment.Name }}/roles/items-api/values.yaml.gotmpl   # Shared env settings
+  #     - environments/{{ .Environment.Name }}/namespaces/naca/items-api/values.yaml.gotmpl   # Final overrides
+  #     - image:
+  #         tag: '{{ env "ITEMS_TAG" | default "undefinedTag" }}'

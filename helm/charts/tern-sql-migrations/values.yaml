@@ -60,4 +60,4 @@ command:
   # args: ['migrate', '--migrations', 'migrations']
   command: ['sh']
   # TODO: create commands in proper entrypoint script in Dockerfile
-  args: ['-c', 'cd /opt/app/ &&ls -la migrations/ && ./tern status --migrations ./migrations  &&./tern migrate --migrations ./migrations ;./tern status --migrations ./migrations']
+  args: ['-c', 'cd /opt/app/ &&ls -la migrations/ && ./tern status --migrations ./migrations  &&./tern migrate --migrations ./migrations &&./tern status --migrations ./migrations']
