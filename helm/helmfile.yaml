@@ -32,7 +32,7 @@ releases:
     labels:
       app_name: "rss-feeds-sql-migrations"
       tier: "naca-rss-feeds"
-    chart: "./charts/sql-migrations"
+    chart: "./charts/tern-sql-migrations"
     namespace: naca
     missingFileHandler: Warn
     values:
