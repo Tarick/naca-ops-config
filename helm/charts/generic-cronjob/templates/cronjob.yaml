@@ -1,0 +1,55 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "generic-cronjob.fullname" . }}
+  labels:
+    {{- include "generic-cronjob.labels" . | nindent 4 }}
+spec:
+  concurrencyPolicy: {{ .Values.concurrencyPolicy }}
+  startingDeadlineSeconds: {{ .Values.startingDeadlineSeconds }}
+  successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
+  schedule: "{{ required "schedule is required to be set" .Values.schedule }}"
+  completions: {{ .Values.completions }}
+  parallelism: {{ .Values.parallelism }}
+  jobTemplate:
+    spec:
+      backoffLimit: {{ .Values.backoffLimit }}
+      activeDeadlineSeconds: {{ .Values.activeDeadlineSeconds }}
+      template:
+        metadata:
+          name: {{ include "generic-cronjob.fullname" . }}
+          labels:
+            {{- include "generic-cronjob.labels" . | nindent 12 }}
+        spec: 
+          restartPolicy: {{ .Values.restartPolicy }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          containers:
+            - name: {{ include "generic-cronjob.fullname" . }}
+              {{- with .Values.command }}
+              command: {{- toYaml . | nindent 16 }}
+              {{- end }}
+              {{- with .Values.args }}
+              args: {{- toYaml . | nindent 16 }}
+              {{- end }}
+              securityContext:
+                {{- toYaml .Values.securityContext | nindent 16 }}
+              image: "{{ required "image.repository is required" .Values.image.repository }}:{{ required "image.tag is required" .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              {{- with .Values.imagePullSecrets }}
+              imagePullSecrets:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}

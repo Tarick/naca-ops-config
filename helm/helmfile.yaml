@@ -71,6 +71,19 @@ releases:
       - environments/{{ .Environment.Name }}/namespaces/naca/rss-feeds-api/values.yaml.gotmpl   # Final overrides
       - image:
           tag: '{{ env "RSS_FEEDS_TAG" | default "undefinedTag" }}'
+  - name: rss-refresh-cronjob
+    labels:
+      app_name: "rss-feeds-refresh-cronjob"
+      tier: "naca-rss-feeds"
+    chart: "./charts/generic-cronjob"
+    namespace: naca
+    needs:
+      - naca/rss-feeds-api
+    missingFileHandler: Warn
+    values:
+      - environments/default/rss-feeds-refresh-cronjob/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/rss-feeds-refresh-cronjob/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/rss-feeds-refresh-cronjob/values.yaml.gotmpl   # Final overrides
 
   - name: publications-sql-migrations
     labels:
