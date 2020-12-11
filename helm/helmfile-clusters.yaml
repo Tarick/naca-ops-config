@@ -3,8 +3,23 @@
 bases:
   - clusters.yaml
 ---
+repositories:
+  - name: stable
+    url: https://charts.helm.sh/stable
+  - name: cillium
+    url: https://helm.cilium.io/
+
 # Helm release names are not namespaced, name will have `dev` or `prod` prefix
 releases:
+  - name: cilium
+    labels:
+      app_name: "cilium"
+      tier: "cluster"
+    chart: "cilium/cilium"
+    namespace: cilium
+    missingFileHandler: Warn
+    values:
+      - clusters/{{ .Environment.Name }}/roles/cilium/values.yaml.gotmpl   # Shared env settings
   - name: local-path-provisiner
     labels:
       app_name: "local-path-provisiner"
