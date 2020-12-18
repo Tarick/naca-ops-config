@@ -144,19 +144,18 @@ releases:
       - environments/{{ .Environment.Name }}/namespaces/naca/items-worker/values.yaml.gotmpl   # Final overrides
       - image:
           tag: '{{ env "ITEMS_TAG" | default "undefinedTag" }}'
-
-  # - name: items-api
-  #   labels:
-  #     app_name: "items-api"
-  #     tier: "naca-items"
-  #   chart: "./charts/generic-api"
-  #   namespace: naca
-  #   needs:
-  #     - naca/items-sql-migrations
-  #   missingFileHandler: Warn
-  #   values:
-  #     - environments/default/items-api/values.yaml.gotmpl   # Shared env settings
-  #     - environments/{{ .Environment.Name }}/roles/items-api/values.yaml.gotmpl   # Shared env settings
-  #     - environments/{{ .Environment.Name }}/namespaces/naca/items-api/values.yaml.gotmpl   # Final overrides
-  #     - image:
-  #         tag: '{{ env "ITEMS_TAG" | default "undefinedTag" }}'
+  - name: items-api
+    labels:
+      app_name: "items-api"
+      tier: "naca-items"
+    chart: "./charts/generic-api"
+    namespace: naca
+    needs:
+      - naca/items-sql-migrations
+    missingFileHandler: Warn
+    values:
+      - environments/default/items-api/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/items-api/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/items-api/values.yaml.gotmpl   # Final overrides
+      - image:
+          tag: '{{ env "ITEMS_TAG" | default "undefinedTag" }}'
