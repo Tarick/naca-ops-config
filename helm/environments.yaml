@@ -5,9 +5,9 @@ environments:
     values:
       - environments/default/values.yaml.gotmpl
       - environments/local/values.yaml.gotmpl
-    missingFileHandler: Warn
+    # missingFileHandler: Warn
   production:
     values:
       - environments/default/values.yaml.gotmpl
       - environments/production/values.yaml.gotmpl
-    missingFileHandler: Warn
+    # missingFileHandler: Warn

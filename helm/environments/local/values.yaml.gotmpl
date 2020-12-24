@@ -1,5 +1,5 @@
 ---
-repository: local
+repository: {{ requiredEnv "CONTAINER_REGISTRY_FQDN" }}
 rss_feeds:
   sql:
     hostname: postgresql

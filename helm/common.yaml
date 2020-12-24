@@ -17,7 +17,7 @@ helmDefaults:
   # Helms atomic option will purge an initial release if it fails for whatever reason
   # i.e. no more 'helm delete --purge' if initial one fails
   atomic: true
-  force: true
+  force: false
     # when using helm 3.2+, automatically create release namespaces if they do not exist (default true)
   createNamespace: true
 # Advanced Configuration: API Capabilities
