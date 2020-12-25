@@ -10,13 +10,28 @@ releases:
       app_name: "postgresql"
       tier: "naca"
     chart: "bitnami/postgresql"
-    version: 8.10.5
+    version: 10.2.0
     namespace: naca
     missingFileHandler: Warn
     values:
       - environments/default/postgresql/values.yaml.gotmpl   # Shared env settings
       - environments/{{ .Environment.Name }}/roles/postgresql/values.yaml.gotmpl   # Shared env settings
       - environments/{{ .Environment.Name }}/namespaces/naca/postgresql/values.yaml.gotmpl   # Final overrides
+  # By default we disable all traffic to postgresql. Here we enable it for other NS/pods.
+  - name: postgresql-network-policy
+    labels:
+      app_name: "postgresql-network-policy"
+      tier: "naca"
+    chart: "./charts/generic-network-policy"
+    namespace: naca
+    missingFileHandler: Warn
+    needs:
+      - naca/postgresql
+    values:
+      - environments/default/postgresql-network-policy/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/postgresql-network-policy/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/postgresql-network-policy/values.yaml.gotmpl   # Final overrides
+
   - name: nsq
     labels:
       app_name: "nsq"
@@ -28,12 +43,27 @@ releases:
       - environments/default/nsq/values.yaml.gotmpl   # Shared env settings
       - environments/{{ .Environment.Name }}/roles/nsq/values.yaml.gotmpl   # Shared env settings
       - environments/{{ .Environment.Name }}/namespaces/naca/nsq/values.yaml.gotmpl   # Final overrides
+  # By default we disable all traffic to nsq. Here we enable it for other NS/pods.
+  - name: nsq-network-policy
+    labels:
+      app_name: "nsq-network-policy"
+      tier: "naca"
+    chart: "./charts/generic-network-policy"
+    namespace: naca
+    missingFileHandler: Warn
+    needs:
+      - naca/nsq
+    values:
+      - environments/default/nsq-network-policy/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/roles/nsq-network-policy/values.yaml.gotmpl   # Shared env settings
+      - environments/{{ .Environment.Name }}/namespaces/naca/nsq-network-policy/values.yaml.gotmpl   # Final overrides
+
   - name: rss-feeds-sql-migrations
     labels:
       app_name: "rss-feeds-sql-migrations"
       tier: "naca-rss-feeds"
     chart: "./charts/tern-sql-migrations"
-    namespace: naca
+    namespace: naca-rss
     missingFileHandler: Warn
     values:
       - environments/default/rss-feeds-sql-migrations/values.yaml.gotmpl   # Shared env settings
@@ -46,10 +76,10 @@ releases:
       app_name: "rss-feeds-worker"
       tier: "naca-rss-feeds"
     chart: "./charts/feeds-worker"
-    namespace: naca
+    namespace: naca-rss
     missingFileHandler: Warn
     needs:
-      - naca/rss-feeds-sql-migrations
+      - naca-rss/rss-feeds-sql-migrations
     values:
       - environments/default/rss-feeds-worker/values.yaml.gotmpl   # Shared env settings
       - environments/{{ .Environment.Name }}/roles/rss-feeds-worker/values.yaml.gotmpl   # Shared env settings
@@ -61,9 +91,9 @@ releases:
       app_name: "rss-feeds-api"
       tier: "naca-rss-feeds"
     chart: "./charts/generic-api"
-    namespace: naca
+    namespace: naca-rss
     needs:
-      - naca/rss-feeds-sql-migrations
+      - naca-rss/rss-feeds-sql-migrations
     missingFileHandler: Warn
     values:
       - environments/default/rss-feeds-api/values.yaml.gotmpl   # Shared env settings
@@ -76,9 +106,9 @@ releases:
       app_name: "rss-feeds-refresh-cronjob"
       tier: "naca-rss-feeds"
     chart: "./charts/generic-cronjob"
-    namespace: naca
+    namespace: naca-rss
     needs:
-      - naca/rss-feeds-api
+      - naca-rss/rss-feeds-api
     missingFileHandler: Warn
     values:
       - environments/default/rss-feeds-refresh-cronjob/values.yaml.gotmpl   # Shared env settings
@@ -90,7 +120,7 @@ releases:
       app_name: "publications-sql-migrations"
       tier: "naca-publications"
     chart: "./charts/tern-sql-migrations"
-    namespace: naca
+    namespace: naca-publications
     missingFileHandler: Warn
     values:
       - environments/default/publications-sql-migrations/values.yaml.gotmpl   # Shared env settings
@@ -104,9 +134,9 @@ releases:
       app_name: "publications-api"
       tier: "naca-publications"
     chart: "./charts/generic-api"
-    namespace: naca
+    namespace: naca-publications
     needs:
-      - naca/publications-sql-migrations
+      - naca-publications/publications-sql-migrations
     missingFileHandler: Warn
     values:
       - environments/default/publications-api/values.yaml.gotmpl   # Shared env settings
@@ -120,7 +150,7 @@ releases:
       app_name: "items-sql-migrations"
       tier: "naca-items"
     chart: "./charts/tern-sql-migrations"
-    namespace: naca
+    namespace: naca-items
     missingFileHandler: Warn
     values:
       - environments/default/items-sql-migrations/values.yaml.gotmpl   # Shared env settings
@@ -134,9 +164,9 @@ releases:
       app_name: "items-worker"
       tier: "naca-items"
     chart: "./charts/items-worker"
-    namespace: naca
+    namespace: naca-items
     needs:
-      - naca/items-sql-migrations
+      - naca-items/items-sql-migrations
     missingFileHandler: Warn
     values:
       - environments/default/items-worker/values.yaml.gotmpl   # Shared env settings
@@ -149,9 +179,9 @@ releases:
       app_name: "items-api"
       tier: "naca-items"
     chart: "./charts/generic-api"
-    namespace: naca
+    namespace: naca-items
     needs:
-      - naca/items-sql-migrations
+      - naca-items/items-sql-migrations
     missingFileHandler: Warn
     values:
       - environments/default/items-api/values.yaml.gotmpl   # Shared env settings

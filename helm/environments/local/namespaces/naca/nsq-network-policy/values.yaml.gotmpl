@@ -1,0 +1,85 @@
+---
+fullnameOverride: nsq-network-policy
+nameOverride: nsq-network-policy
+
+matchLabels:
+  app.kubernetes.io/name: nsq
+  app.kubernetes.io/instance: nsq
+ingress:
+# Port 4150, 4151 - nsqd
+  - from:
+  # Allow nsq pods to each other (nsqd, nsq-admin, etc)
+    - namespaceSelector:
+        matchLabels:
+          name: naca
+      podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/name
+          operator: In
+          values:
+          - nsq
+  # RSS Feeds
+    - namespaceSelector:
+        matchLabels:
+          name: naca-rss
+      podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/instance
+          operator: In
+          values:
+          - rss-worker
+          - rss-feeds-api
+  # Items
+    - namespaceSelector:
+        matchLabels:
+          name: naca-items
+      podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/name
+          operator: In
+          values:
+          - items-api
+          - items-worker
+    ports:
+      - port: 4150
+        protocol: TCP
+      - port: 4151
+        protocol: TCP
+
+# Port 4160, 4161 - nsqlookupd
+  - from:
+  # Allow nsq pods to each other (nsqd, nsq-admin, etc)
+    - namespaceSelector:
+        matchLabels:
+          name: naca
+      podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/name
+          operator: In
+          values:
+          - nsq
+  # RSS Feeds
+    - namespaceSelector:
+        matchLabels:
+          name: naca-rss
+      podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/instance
+          operator: In
+          values:
+          - rss-worker
+  # Items
+    - namespaceSelector:
+        matchLabels:
+          name: naca-items
+      podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/name
+          operator: In
+          values:
+          - items-worker
+    ports:
+      - port: 4160
+        protocol: TCP
+      - port: 4161
+        protocol: TCP

@@ -1,0 +1,47 @@
+---
+fullnameOverride: postgresql-network-policy
+nameOverride: postgresql-network-policy
+
+matchLabels:
+  app.kubernetes.io/instance: postgresql
+  app.kubernetes.io/name: postgresql
+ingress:
+  - from:
+  # Publications
+    - namespaceSelector:
+        matchLabels:
+          name: naca-publications
+      podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/name
+          operator: In
+          values:
+          - publications-api
+          - publications-sql-migrations
+  # RSS Feeds
+    - namespaceSelector:
+        matchLabels:
+          name: naca-rss
+      podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/instance
+          operator: In
+          values:
+          - rss-worker
+          - rss-feeds-sql-migration
+          - rss-feeds-api
+  # Items
+    - namespaceSelector:
+        matchLabels:
+          name: naca-items
+      podSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/name
+          operator: In
+          values:
+          - items-api
+          - items-worker
+          - items-sql-migrations
+    ports:
+      - port: 5432
+        protocol: TCP

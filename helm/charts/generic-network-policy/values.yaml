@@ -1,0 +1,30 @@
+# Default values for generic-network-policy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+matchLabels: {}
+# Example for postgresql
+# app.kubernetes.io/instance: postgresql
+# app.kubernetes.io/name: postgresql
+
+ingress: []
+# Example for postgresql
+  # - from:
+  #   - namespaceSelector:
+  #       matchExpressions:
+  #       - key: name
+  #         operator: In
+  #         values:
+  #         - naca-publications
+  #     podSelector:
+  #       matchLabels:
+  #         app.kubernetes.io/name: publications-api
+  #   ports:
+  #     - port: 5432
+  #       protocol: TCP
+
+
+egress: []

@@ -1,5 +1,7 @@
 
 fullnameOverride: rss-feeds-sql-migrations
+nameOverride: rss-feeds-sql-migrations
+
 image:
   repository: {{ .Values.repository }}/rss-feeds/rss-feeds-sql-migrations
   # tag: 0.0.1
@@ -16,7 +18,7 @@ config:
   database:
     host: {{ .Values.rss_feeds.sql.hostname }}
     database: {{ .Values.rss_feeds.sql.database }}
-    port: {{ .Values.rss_feeds.sql.port }}}
+    port: {{ .Values.rss_feeds.sql.port }}
     user: {{ .Values.rss_feeds.sql.username }}
     password: {{ .Values.rss_feeds.sql.password }}
     sslmode: {{ .Values.rss_feeds.sql.sslmode }}

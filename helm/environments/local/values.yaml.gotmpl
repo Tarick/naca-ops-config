@@ -2,48 +2,48 @@
 repository: {{ requiredEnv "CONTAINER_REGISTRY_FQDN" }}
 rss_feeds:
   sql:
-    hostname: postgresql
+    hostname: postgresql.naca.svc.cluster.local.
     port: 5432
     username: rss_feeds
     password: rss_feeds
     database: rss_feeds
     sslmode: disable
   nsq:
-    nsqlookupd: nsq-nsqlookupd:4161
-    nsqd: nsq-nsqd:4150
+    nsqlookupd: nsq-nsqlookupd.naca.svc.cluster.local.:4161
+    nsqd: nsq-nsqd.naca.svc.cluster.local.:4150
   topics:
     # shared between api and worker
     refresh_feeds: "rss-feeds-refresh"
   api:
-    hostname: rss-feeds-api.naca.svc.cluster.local.
-    url: http://rss-feeds-api.naca.svc.cluster.local.
+    hostname: rss-feeds-api.naca-rss.svc.cluster.local.
+    url: http://rss-feeds-api.naca-rss.svc.cluster.local.
 
 publications:
   sql:
-    hostname: postgresql
+    hostname: postgresql.naca.svc.cluster.local.
     port: 5432
     username: publications
     password: publications
     database: publications
     sslmode: disable
   api:
-    hostname: publications-api.naca.svc.cluster.local.
-    url: http://publications-api.naca.svc.cluster.local.
+    hostname: publications-api.naca-publications.svc.cluster.local.
+    url: http://publications-api.naca-publications.svc.cluster.local.
 
 items:
   sql:
-    hostname: postgresql
+    hostname: postgresql.naca.svc.cluster.local.
     port: 5432
     username: items
     password: items
     database: items
     sslmode: disable
   nsq:
-    nsqlookupd: nsq-nsqlookupd:4161
-    nsqd: nsq-nsqd:4150
+    nsqlookupd: nsq-nsqlookupd.naca.svc.cluster.local.:4161
+    nsqd: nsq-nsqd.naca.svc.cluster.local.:4150
   topics:
     # shared between api and worker
     newitem: "new-items-process"
   api:
     hostname: items-api.naca.svc.cluster.local.
-    url: http://items-api.naca.svc.cluster.local.
+    url: http://items-api.naca-items.svc.cluster.local.

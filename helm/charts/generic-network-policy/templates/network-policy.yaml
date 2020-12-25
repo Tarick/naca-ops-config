@@ -1,0 +1,28 @@
+{{- $fullName := include "generic-network-policy.fullname" . -}}
+kind: NetworkPolicy
+apiVersion: "networking.k8s.io/v1"
+metadata:
+  name: {{ include "generic-network-policy.fullname" . }}
+  labels:
+    {{- include "generic-network-policy.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+    {{- with .Values.matchLabels }}
+        {{- toYaml . | nindent 6 }}
+    {{- end }}
+  policyTypes:
+  {{- if .Values.ingress }}
+    - Ingress
+  {{- end }}
+  {{- if .Values.egress }}
+    - Egress
+  {{- end }}
+{{- with .Values.ingress }}
+  ingress:
+    {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- with .Values.egress }}
+  egress:
+    {{- toYaml . | nindent 2 }}
+{{- end }}
