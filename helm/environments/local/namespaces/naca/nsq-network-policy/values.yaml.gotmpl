@@ -27,7 +27,7 @@ ingress:
         - key: app.kubernetes.io/instance
           operator: In
           values:
-          - rss-worker
+          - rss-feeds-worker
           - rss-feeds-api
   # Items
     - namespaceSelector:
@@ -67,7 +67,7 @@ ingress:
         - key: app.kubernetes.io/instance
           operator: In
           values:
-          - rss-worker
+          - rss-feeds-worker
   # Items
     - namespaceSelector:
         matchLabels:
