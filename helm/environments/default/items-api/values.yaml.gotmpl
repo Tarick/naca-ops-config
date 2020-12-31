@@ -14,6 +14,10 @@ resources:
     memory: "400Mi"
     cpu: "50m"
 
+extraPodLabels:
+  app: items-api
+  version: {{ requiredEnv "ITEMS_TAG" }}
+
 config:
   content: |-
     logging:

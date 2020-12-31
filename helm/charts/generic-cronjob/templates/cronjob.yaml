@@ -21,6 +21,9 @@ spec:
           name: {{ include "generic-cronjob.fullname" . }}
           labels:
             {{- include "generic-cronjob.labels" . | nindent 12 }}
+            {{- with .Values.extraPodLabels }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
         spec: 
           restartPolicy: {{ .Values.restartPolicy }}
           {{- with .Values.nodeSelector }}

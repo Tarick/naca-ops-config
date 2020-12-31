@@ -12,6 +12,9 @@ resources:
     memory: "10Mi"
     cpu: "10m"
 
+extraPodLabels:
+  app: rss-feeds-refresh-cronjob
+
 # This os for Istio sidecar, remove if not using
 command: ['sh', '-c']
 args:

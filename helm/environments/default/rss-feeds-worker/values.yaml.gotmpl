@@ -12,6 +12,10 @@ resources:
     memory: "400Mi"
     cpu: "50m"
 
+extraPodLabels:
+  app: rss-feeds-worker
+  version: {{ requiredEnv "RSS_FEEDS_TAG" }}
+
 config:
   logging:
     level: debug

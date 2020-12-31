@@ -1,0 +1,45 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: kiali
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "kiali.local"
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: kiali
+  namespace: monitoring
+spec:
+  gateways:
+  - kiali
+  hosts: [ "kiali.local" ]
+  http:
+  - route:
+    - destination:
+        host: "kiali.monitoring.svc.cluster.local"
+        port:
+          number: 20001
+      weight: 100
+...
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: kiali
+  namespace: monitoring
+spec:
+  host: kiali
+  trafficPolicy:
+    tls:
+      mode: DISABLE

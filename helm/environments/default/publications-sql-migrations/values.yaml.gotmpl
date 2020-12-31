@@ -23,6 +23,10 @@ config:
     password: {{ .Values.publications.sql.password }}
     sslmode: {{ .Values.publications.sql.sslmode }}
 
+# We don't want istio injection in the migration pod
+podAnnotations:
+  sidecar.istio.io/inject: "false"
+
 # This os for Istio sidecar, remove if not using
 #command:
 #  command: ['sh', '-c']

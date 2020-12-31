@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: naca
+spec:
+  hosts:
+  - "naca.local"
+  gateways:
+  - naca/naca
+  http:
+  - name: "items"
+    timeout: 30s
+    # mirror: 
+    #   host: echo.naca-items.svc.cluster.local
+    retries:
+      attempts: 2
+      # default 'timeout' is above
+      # perTryTimeout: 60s
+      retryOn: gateway-error,connect-failure,refused-stream,envoy-ratelimited,retriable-4xx,retriable-headers,retriable-status-codes
+    match:
+    - uri:
+        prefix: /query
+    route:
+    - destination:
+        host: items-api.naca-items.svc.cluster.local
+  - name: "publications"
+    match:
+    - uri:
+        prefix: /publications
+    - uri:
+        prefix: /publishers
+    route:
+    - destination:
+        host: publications-api.naca-publications.svc.cluster.local
+

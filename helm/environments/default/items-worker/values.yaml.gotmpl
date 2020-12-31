@@ -12,6 +12,10 @@ resources:
     memory: "400Mi"
     cpu: "50m"
 
+extraPodLabels:
+  app: items-worker
+  version: {{ requiredEnv "ITEMS_TAG" }}
+
 config:
   logging:
     level: debug

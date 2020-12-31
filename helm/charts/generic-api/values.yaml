@@ -87,5 +87,7 @@ container: {}
   #   - "-f"
   #   - "/dev/null"
 
+extraPodLabels: {}
+
 config:
   content: ""

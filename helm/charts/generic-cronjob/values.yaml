@@ -38,6 +38,8 @@ parallelism:
 # Always, OnFailure, Never
 restartPolicy: Never
 
+extraPodLabels: {}
+
 securityContext: {}
   # capabilities:
   #   drop:
