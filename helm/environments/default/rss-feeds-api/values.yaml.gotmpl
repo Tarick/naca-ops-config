@@ -18,6 +18,11 @@ extraPodLabels:
   app: rss-feeds-api
   version: {{ requiredEnv "RSS_FEEDS_TAG" }}
 
+podAnnotations:
+  prometheus.io/path: /metrics
+  prometheus.io/port: "80"
+  prometheus.io/scrape: "true"
+
 config:
   content: |-
     logging:

@@ -18,6 +18,11 @@ extraPodLabels:
   app: publications-api
   version: {{ requiredEnv "PUBLICATIONS_TAG" }}
 
+podAnnotations:
+  prometheus.io/path: /metrics
+  prometheus.io/port: "80"
+  prometheus.io/scrape: "true"
+
 config:
   content: |-
     logging:

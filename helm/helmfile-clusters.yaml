@@ -44,12 +44,21 @@ releases:
     values:
       - clusters/{{ .Environment.Name }}/roles/metallb/values.yaml.gotmpl   # Shared env settings
 
+  - name: metrics-server
+    labels:
+      app_name: "metrics-server"
+      tier: "cluster"
+    chart: "stable/metrics-server"
+    namespace: monitoring
+    missingFileHandler: Warn
+    values:
+      - clusters/{{ .Environment.Name }}/roles/metrics-server/values.yaml.gotmpl   # Shared env settings
+
   - name: prometheus
     labels:
       app_name: "prometheus"
       tier: "cluster"
     chart: "prometheus-community/prometheus"
-    # version: 1.28.0
     namespace: monitoring
     missingFileHandler: Warn
     values:
