@@ -1,0 +1,45 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: grafana
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "grafana.local"
+
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  gateways:
+  - grafana
+  hosts: [ "grafana.local" ]
+  http:
+  - route:
+    - destination:
+        host: "grafana.monitoring.svc.cluster.local"
+        port:
+          number: 80
+      weight: 100
+...
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  host: grafana
+  trafficPolicy:
+    tls:
+      mode: DISABLE

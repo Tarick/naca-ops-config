@@ -12,6 +12,10 @@ repositories:
     url: https://kiali.org/helm-charts
   - name: prometheus-community
     url: https://prometheus-community.github.io/helm-charts
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+  - name: jaegertracing
+    url: https://jaegertracing.github.io/helm-charts
 
 # Helm release names are not namespaced, name will have `dev` or `prod` prefix
 releases:
@@ -64,6 +68,17 @@ releases:
     values:
       - clusters/{{ .Environment.Name }}/roles/prometheus/values.yaml.gotmpl   # Shared env settings
 
+  - name: grafana
+    labels:
+      app_name: "grafana"
+      tier: "cluster"
+    chart: "grafana/grafana"
+    version: 6.1.16
+    namespace: monitoring
+    missingFileHandler: Warn
+    values:
+      - clusters/{{ .Environment.Name }}/roles/grafana/values.yaml.gotmpl   # Shared env settings
+
   - name: kiali
     labels:
       app_name: "kiali"
@@ -75,5 +90,13 @@ releases:
     values:
       - clusters/{{ .Environment.Name }}/roles/kiali/values.yaml.gotmpl   # Shared env settings
 
-
-
+  - name: jaeger
+    labels:
+      app_name: "jaeger"
+      tier: "cluster"
+    chart: "jaegertracing/jaeger"
+    version: 0.39.7
+    namespace: jaeger
+    missingFileHandler: Warn
+    values:
+      - clusters/{{ .Environment.Name }}/roles/jaeger/values.yaml.gotmpl   # Shared env settings

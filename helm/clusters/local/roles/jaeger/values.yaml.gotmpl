@@ -1,0 +1,257 @@
+
+provisionDataStore:
+  cassandra: false
+  elasticsearch: true
+  kafka: true
+
+nameOverride: "jaeger"
+fullnameOverride: "jaeger"
+
+storage:
+  type: elasticsearch
+  elasticsearch:
+    scheme: http
+    host: elasticsearch-master
+    port: 9200
+    user: elastic
+    usePassword: true
+    # CHANGE IN PROD!
+    password: localtest
+    # indexPrefix: test
+    ## Use existing secret (ignores previous password)
+    # existingSecret:
+    # existingSecretKey:
+  kafka:
+    # Beware of changed names of helm release
+    brokers:
+      - jaeger-kafka:9092
+    topic: jaeger_v1_test
+    authentication: none
+    extraEnv: []
+
+# Begin: Override values on the Kafka subchart to customize for Jaeger
+kafka:
+  replicaCount: 1
+  autoCreateTopicsEnable: true
+  zookeeper:
+    replicaCount: 1
+    serviceAccount:
+      create: true
+
+# End: Override values on the Kafka subchart to customize for Jaeger
+
+# Begin: Default values for the various components of Jaeger
+# This chart has been based on the Kubernetes integration found in the following repo:
+# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production/jaeger-production-template.yml
+#
+# For configurable values of the elasticsearch if provisioned, please see:
+# https://github.com/elastic/helm-charts/tree/master/elasticsearch#configuration
+elasticsearch:
+    # 3 in production!
+    replicas: 1
+    minimumMasterNodes: 1
+    resources:
+      requests:
+        cpu: "1000m"
+        memory: "2Gi"
+      limits:
+        cpu: "1000m"
+        memory: "2Gi"
+
+ingester:
+  enabled: true
+  podSecurityContext: {}
+  securityContext: {}
+  annotations: {}
+  image: jaegertracing/jaeger-ingester
+  imagePullSecrets: []
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  cmdlineParams: {}
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    # targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+  service:
+    annotations: {}
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
+    type: ClusterIP
+  resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+  serviceAccount:
+    create: true
+    name:
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+  extraSecretMounts: []
+  extraConfigmapMounts: []
+
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+
+agent:
+  enabled: true
+  daemonset:
+    useHostPort: false
+
+collector:
+  enabled: true
+  cmdlineParams: {}
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    # targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+  service:
+    annotations: {}
+    # List of IP ranges that are allowed to access the load balancer (if supported)
+    loadBalancerSourceRanges: []
+    type: ClusterIP
+    grpc:
+      port: 14250
+      # nodePort:
+    # httpPort: can accept spans directly from clients in jaeger.thrift format
+    http:
+      port: 14268
+      # nodePort:
+    zipkin:
+      port: 9411
+      # nodePort:
+  ingress:
+    enabled: false
+  resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 1Gi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+  serviceAccount:
+    create: true
+    name:
+    annotations: {}
+  extraConfigmapMounts: []
+  # - name: jaeger-config
+  #   mountPath: /config
+  #   subPath: ""
+  #   configMap: jaeger-config
+  #   readOnly: true
+  # samplingConfig: |-
+  #   {
+  #     "service_strategies": [
+  #       {
+  #         "service": "foo",
+  #         "type": "probabilistic",
+  #         "param": 0.8,
+  #         "operation_strategies": [
+  #           {
+  #             "operation": "op1",
+  #             "type": "probabilistic",
+  #             "param": 0.2
+  #           },
+  #           {
+  #             "operation": "op2",
+  #             "type": "probabilistic",
+  #             "param": 0.4
+  #           }
+  #         ]
+  #       },
+  #       {
+  #         "service": "bar",
+  #         "type": "ratelimiting",
+  #         "param": 5
+  #       }
+  #     ],
+  #     "default_strategy": {
+  #       "type": "probabilistic",
+  #       "param": 1
+  #     }
+  #   }
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+
+query:
+  enabled: true
+  podSecurityContext: {}
+  securityContext: {}
+  agentSidecar:
+    enabled: false
+  cmdlineParams: {}
+  extraEnv: []
+  replicaCount: 1
+  ingress:
+    enabled: false
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #    cpu: 256m
+    #    memory: 128Mi
+  serviceAccount:
+    create: true
+    name:
+    annotations: {}
+  serviceMonitor:
+    enabled: false
+    additionalLabels: {}
+  # config: |-
+  #   {
+  #     "dependencies": {
+  #       "dagMaxNumServices": 200,
+  #       "menuEnabled": true
+  #     },
+  #     "archiveEnabled": true,
+  #     "tracking": {
+  #       "gaID": "UA-000000-2",
+  #       "trackErrors": true
+  #     }
+  #   }
+
+spark:
+  enabled: true
+  annotations: {}
+  image: jaegertracing/spark-dependencies
+  cmdlineParams: {}
+  extraEnv: []
+  schedule: "49 15 * * *"
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
+  concurrencyPolicy: Forbid
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 256m
+    #   memory: 128Mi
+  serviceAccount:
+    create: true
+
+esIndexCleaner:
+  enabled: false
+
+esRollover:
+  enabled: false
+
+esLookback:
+  enabled: false
+# End: Default values for the various components of Jaeger

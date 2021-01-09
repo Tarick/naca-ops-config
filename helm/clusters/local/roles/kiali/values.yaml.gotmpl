@@ -8,12 +8,33 @@ fullnameOverride: "kiali"
 
 istio_namespace: "istio-system" # default is where Kiali is installed
 external_services:
+  tracing:
+    in_cluster_url: http://jaeger-query.jaeger.svc.cluster.local
+    url: http://jaeger.local
   prometheus:
     url: http://prometheus-server.monitoring.svc.cluster.local
+  grafana:
+    url: http://grafana.local/api/dashboards/home
+    in_cluster_url: http://grafana.monitoring.svc.cluster.local/api/dashboards/home
+    dashboards:
+    - name: "Istio Mesh Dashboard"
+    - name: "Istio Service Dashboard"
+    - name: "Istio Workload Dashboard"
+    is_core_component: true
+    enabled: true
+    auth:
+      type: bearer
+      token: eyJrIjoiQzNvNGtWb0txQmJoUVEybndqa2JWakF1TDd1anZjdUoiLCJuIjoia2lhbGkiLCJpZCI6MX0=
   custom_dashboards:
     prometheus:
       url: http://prometheus-server.monitoring.svc.cluster.local
+      is_core_component: true
     #namespace_label: monitoring
 auth:
   # For local only, definitely remove for PRODUCTION!!!
   strategy: "anonymous"
+
+excluded_workloads:
+- "CronJob"
+- "DeploymentConfig"
+- "Job"
