@@ -16,6 +16,14 @@ logging:
   output_paths: ["stdout"]
   error_output_paths: ["stderr"]
 
+tracing:
+  service_name: "{{ .Values.config.tracing.service_name }}"
+  sampler_rate: {{ .Values.config.tracing.sampler_rate }}
+  sampler_type: "{{ .Values.config.tracing.sampler_type }}"
+  agent_address: "{{ .Values.config.tracing.agent_address }}"
+  collector_endpoint: "{{ .Values.config.tracing.collector_endpoint }}"
+  log_spans: {{ .Values.config.tracing.log_spans }}
+
 database:
   hostname: {{ .Values.config.database.hostname }}
   port: {{ .Values.config.database.port }}
