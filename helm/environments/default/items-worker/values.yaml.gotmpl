@@ -1,5 +1,7 @@
 ---
 fullnameOverride: items-worker
+nameOverride: items-worker
+
 image:
   repository: {{ .Values.repository }}/items/items-worker
   # tag: 0.0.1
@@ -17,23 +19,24 @@ extraPodLabels:
   version: {{ requiredEnv "ITEMS_TAG" }}
 
 config:
-  logging:
-    level: debug
-  database:
-    hostname: {{ .Values.items.sql.hostname }}
-    port: {{ .Values.items.sql.port }}
-    name: {{ .Values.items.sql.database }}
-    username: {{ .Values.items.sql.username }}
-    password: {{ .Values.items.sql.password }}
-    log_level: debug
-    sslmode: disable
-    max_connections: 10
-    min_connections: 2
-  consume:
-    nsqlookup: {{ .Values.items.nsq.nsqlookupd }}
-    topic: {{ .Values.items.topics.newitem }}
-    channel: "NewItemsProcess"
-    # prefetch (in flight) messages should be bigger than workers
-    prefetch: 1
-    workers: 1
-    attempts: 1
+  content: |-
+    logging:
+      level: debug
+    database:
+      hostname: {{ .Values.items.sql.hostname }}
+      port: {{ .Values.items.sql.port }}
+      name: {{ .Values.items.sql.database }}
+      username: {{ .Values.items.sql.username }}
+      password: {{ .Values.items.sql.password }}
+      log_level: debug
+      sslmode: disable
+      max_connections: 10
+      min_connections: 2
+    consume:
+      nsqlookup: {{ .Values.items.nsq.nsqlookupd }}
+      topic: {{ .Values.items.topics.newitem }}
+      channel: "NewItemsProcess"
+      # prefetch (in flight) messages should be bigger than workers
+      prefetch: 1
+      workers: 1
+      attempts: 1

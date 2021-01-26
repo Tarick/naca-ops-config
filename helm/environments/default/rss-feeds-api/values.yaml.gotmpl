@@ -44,9 +44,7 @@ config:
       agent_address: ""
       collector_endpoint: "http://jaeger-collector.jaeger:14268/api/traces"
       log_spans: true
-    server:
-      address: ":80"
-      request_timeout: 10
+      disable: false
     database:
       hostname: {{ .Values.rss_feeds.sql.hostname }}
       port: {{ .Values.rss_feeds.sql.port }}

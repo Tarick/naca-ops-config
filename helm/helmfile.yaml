@@ -75,7 +75,7 @@ releases:
     labels:
       app_name: "rss-feeds-worker"
       tier: "naca-rss-feeds"
-    chart: "./charts/feeds-worker"
+    chart: "./charts/generic-worker"
     namespace: naca-rss
     missingFileHandler: Warn
     needs:
@@ -163,7 +163,7 @@ releases:
     labels:
       app_name: "items-worker"
       tier: "naca-items"
-    chart: "./charts/items-worker"
+    chart: "./charts/generic-worker"
     namespace: naca-items
     needs:
       - naca-items/items-sql-migrations

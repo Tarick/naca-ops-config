@@ -3,10 +3,10 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "items-worker.fullname" . }}
+  name: {{ template "generic-worker.fullname" . }}
 spec:
 {{ toYaml .Values.pdb | indent 2 -}}
   selector:
     matchLabels:
-      {{- include "items-worker.selectorLabels" . | nindent 6 }}
+      {{- include "generic-worker.selectorLabels" . | nindent 6 }}
 {{- end }}
