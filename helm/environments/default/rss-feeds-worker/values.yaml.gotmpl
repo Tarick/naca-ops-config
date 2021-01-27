@@ -48,6 +48,7 @@ config:
       sslmode: disable
       max_connections: 10
       min_connections: 2
+      log_level: info
     consume:
       nsqlookup: {{ .Values.rss_feeds.nsq.nsqlookupd }}
       topic: {{ .Values.rss_feeds.topics.refresh_feeds }}

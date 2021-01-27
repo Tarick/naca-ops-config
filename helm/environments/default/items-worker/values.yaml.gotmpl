@@ -21,14 +21,31 @@ extraPodLabels:
 config:
   content: |-
     logging:
-      level: debug
+      # Development key puts the logger in development mode, which changes the behavior of DPanicLevel and takes stacktraces more liberally.
+      development: true
+      level: info
+      #encoding: console
+      encoding: json
+      disable_caller: false
+      disable_stacktrace: false
+      disable_color: true
+      output_paths: ["stdout"]
+      error_output_paths: ["stderr"]
+    tracing:
+      service_name: "rss-feeds-api"
+      sampler_rate: 1
+      sampler_type: "const"
+      agent_address: ""
+      collector_endpoint: "http://jaeger-collector.jaeger:14268/api/traces"
+      log_spans: true
+      disable: false
     database:
       hostname: {{ .Values.items.sql.hostname }}
       port: {{ .Values.items.sql.port }}
       name: {{ .Values.items.sql.database }}
       username: {{ .Values.items.sql.username }}
       password: {{ .Values.items.sql.password }}
-      log_level: debug
+      log_level: info
       sslmode: disable
       max_connections: 10
       min_connections: 2

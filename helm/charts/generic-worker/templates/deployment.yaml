@@ -40,7 +40,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ include "generic-api.fullname" . }}
+        - name: {{ include "generic-worker.fullname" . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ required "Image repository is required"  .Values.image.repository | }}:{{ required "Image tag is required" .Values.image.tag }}"
