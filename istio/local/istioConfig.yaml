@@ -1,13 +1,6 @@
----
-# Generated from default profile with 1.8.1 version
-# 'istioctl profile dump default >istioConfig.yaml'
-#
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 spec:
-  addonComponents:
-    istiocoredns:
-      enabled: false
   components:
     base:
       enabled: true
@@ -15,149 +8,37 @@ spec:
       enabled: false
     egressGateways:
     - enabled: false
-      k8s:
-        env:
-        - name: ISTIO_META_ROUTER_MODE
-          value: standard
-        hpaSpec:
-          maxReplicas: 5
-          metrics:
-          - resource:
-              name: cpu
-              targetAverageUtilization: 80
-            type: Resource
-          minReplicas: 1
-          scaleTargetRef:
-            apiVersion: apps/v1
-            kind: Deployment
-            name: istio-egressgateway
-        resources:
-          limits:
-            cpu: 2000m
-            memory: 1024Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-        service:
-          ports:
-          - name: http2
-            port: 80
-            protocol: TCP
-            targetPort: 8080
-          - name: https
-            port: 443
-            protocol: TCP
-            targetPort: 8443
-          - name: tls
-            port: 15443
-            protocol: TCP
-            targetPort: 15443
-        strategy:
-          rollingUpdate:
-            maxSurge: 100%
-            maxUnavailable: 25%
       name: istio-egressgateway
     ingressGateways:
     - enabled: true
-      k8s:
-        env:
-        - name: ISTIO_META_ROUTER_MODE
-          value: standard
-        hpaSpec:
-          maxReplicas: 5
-          metrics:
-          - resource:
-              name: cpu
-              targetAverageUtilization: 80
-            type: Resource
-          minReplicas: 1
-          scaleTargetRef:
-            apiVersion: apps/v1
-            kind: Deployment
-            name: istio-ingressgateway
-        resources:
-          limits:
-            cpu: 2000m
-            memory: 1024Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-        service:
-          ports:
-          - name: status-port
-            port: 15021
-            protocol: TCP
-            targetPort: 15021
-          - name: http2
-            port: 80
-            protocol: TCP
-            targetPort: 8080
-          - name: https
-            port: 443
-            protocol: TCP
-            targetPort: 8443
-          - name: tcp-istiod
-            port: 15012
-            protocol: TCP
-            targetPort: 15012
-          - name: tls
-            port: 15443
-            protocol: TCP
-            targetPort: 15443
-        strategy:
-          rollingUpdate:
-            maxSurge: 100%
-            maxUnavailable: 25%
       name: istio-ingressgateway
     istiodRemote:
       enabled: false
     pilot:
       enabled: true
-      k8s:
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.name
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8080
-          initialDelaySeconds: 1
-          periodSeconds: 3
-          timeoutSeconds: 5
-        strategy:
-          rollingUpdate:
-            maxSurge: 100%
-            maxUnavailable: 25%
   hub: docker.io/istio
   meshConfig:
     accessLogFile: /dev/stdout
     accessLogEncoding: JSON
     defaultConfig:
-      proxyMetadata:
-        ISTIO_META_DNS_CAPTURE: "true"
-        ISTIO_META_PROXY_XDS_VIA_AGENT: "true"
+      # proxyMetadata:
+      #   ISTIO_META_DNS_CAPTURE: "true"
+      #   ISTIO_META_PROXY_XDS_VIA_AGENT: "true"
       tracing:
         # 1% sampling
         sampling: 1
+        zipkin:
+          address: jaeger-collector.jaeger.svc.cluster.local:9411
     enablePrometheusMerge: true
   profile: default
-  tag: 1.8.1
+  tag: 1.11.1
   values:
     base:
       enableCRDTemplates: false
       validationURL: ""
-    clusterResources: true
     gateways:
       istio-egressgateway:
-        autoscaleEnabled: true
+        autoscaleEnabled: false
         env: {}
         name: istio-egressgateway
         secretVolumes:
@@ -183,10 +64,6 @@ spec:
         type: LoadBalancer
         zvpn: {}
     global:
-      arch:
-        amd64: 2
-        ppc64le: 2
-        s390x: 2
       configValidation: true
       defaultNodeSelector: {}
       defaultPodDisruptionBudget:
@@ -203,9 +80,6 @@ spec:
       logAsJson: false
       logging:
         level: default:info
-      meshExpansion:
-        enabled: false
-        useILB: false
       meshNetworks: {}
       mountMtlsCerts: false
       multiCluster:
@@ -259,13 +133,8 @@ spec:
         datadog: {}
         lightstep: {}
         stackdriver: {}
-        zipkin:
-          address: jaeger-collector.jaeger.svc.cluster.local:9411
+        zipkin: {}
       useMCP: false
-    istiocoredns:
-      coreDNSImage: coredns/coredns
-      coreDNSPluginImage: istio/coredns-plugin:0.2-istio-1.1
-      coreDNSTag: 1.6.2
     istiodRemote:
       injectionURL: ""
     pilot:
@@ -283,12 +152,6 @@ spec:
       nodeSelector: {}
       replicaCount: 1
       traceSampling: 1
-    sidecarInjectorWebhook:
-      enableNamespacesByDefault: false
-      objectSelector:
-        autoInject: true
-        enabled: false
-      rewriteAppHTTPProbe: true
     telemetry:
       enabled: true
       v2:

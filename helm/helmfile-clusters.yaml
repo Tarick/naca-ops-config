@@ -16,6 +16,8 @@ repositories:
     url: https://grafana.github.io/helm-charts
   - name: jaegertracing
     url: https://jaegertracing.github.io/helm-charts
+  - name: stevehipwell
+    url: https://stevehipwell.github.io/helm-charts
 
 # Helm release names are not namespaced, name will have `dev` or `prod` prefix
 releases:
@@ -53,7 +55,7 @@ releases:
     labels:
       app_name: "metrics-server"
       tier: "cluster"
-    chart: "stable/metrics-server"
+    chart: "stevenhipwell/metrics-server"
     namespace: monitoring
     missingFileHandler: Warn
     values:
@@ -79,6 +81,26 @@ releases:
     missingFileHandler: Warn
     values:
       - clusters/{{ .Environment.Name }}/roles/grafana/values.yaml.gotmpl   # Shared env settings
+  # - name: loki
+  #   labels:
+  #     app_name: "loki"
+  #     tier: "cluster"
+  #   chart: "grafana/loki-stack"
+  #   version: 2.3.1
+  #   namespace: monitoring
+  #   missingFileHandler: Warn
+  #   values:
+  #     - clusters/{{ .Environment.Name }}/roles/loki/values.yaml.gotmpl   # Shared env settings
+  # - name: promtail
+  #   labels:
+  #     app_name: "promtail"
+  #     tier: "cluster"
+  #   chart: "grafana/promtail"
+  #   version: 3.0.4
+  #   namespace: monitoring
+  #   missingFileHandler: Warn
+  #   values:
+  #     - clusters/{{ .Environment.Name }}/roles/promtail/values.yaml.gotmpl   # Shared env settings
 
   - name: kiali
     labels:
